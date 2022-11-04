@@ -29,8 +29,8 @@ public class BasicGameApp implements Runnable {
 	//You can set their initial values too
 
 	//Sets the width and height of the program window
-	final int WIDTH = 1000;
-	final int HEIGHT = 700;
+	final int WIDTH = 700;
+	final int HEIGHT = 500;
 
 	//Declare the variables needed for the graphics
 	public JFrame frame;
@@ -38,11 +38,14 @@ public class BasicGameApp implements Runnable {
 	public JPanel panel;
 
 	public BufferStrategy bufferStrategy;
+
 	public Image astroPic;
+	public Image cleatPic;
 
 	//Declare the objects used in the program
 	//These are things that are made up of more than one variable type
-	private Astronaut astro;
+	public Object ball;
+	public Object cleat;
 
 	// Main method definition
 	// This is the code that runs first and automatically
@@ -60,8 +63,11 @@ public class BasicGameApp implements Runnable {
 
 		//variable and objects
 		//create (construct) the objects needed for the game and load up
-		astroPic = Toolkit.getDefaultToolkit().getImage("astronaut.png"); //load the picture
-		astro = new Astronaut("astro",10,100); //construct the astronaut
+		astroPic = Toolkit.getDefaultToolkit().getImage("soccerBall.png"); //load the picture
+		ball = new Object("astro",100,400); //construct the astronaut
+
+		cleatPic = Toolkit.getDefaultToolkit().getImage("soccerCleat.png");
+		cleat = new Object("cleat",400,250);
 
 	} // end BasicGameApp constructor
 
@@ -78,19 +84,20 @@ public class BasicGameApp implements Runnable {
 		//for the moment we will loop things forever.
 		while (true) {
 			moveThings();  //move all the game objects
-			render();  // paint the graphics
-			pause(20); // sleep for 10 ms
+			render();  //paint the graphics
+			pause(20); //sleep for 10 ms
 		}
 	}
 
 	public void moveThings() {
 		//calls the move( ) code in the objects
-		astro.move();
+		ball.bounce();
+		cleat.wrap();
 
 	}
 
 	//Pauses or sleeps the computer for the amount specified in milliseconds
-	public void pause(int time ) {
+	public void pause(int time) {
 		try {
 			Thread.sleep(time);
 		} catch (InterruptedException e) {
@@ -132,7 +139,9 @@ public class BasicGameApp implements Runnable {
 		g.clearRect(0, 0, WIDTH, HEIGHT);
 
 		//draw the image of the astronaut
-		g.drawImage(astroPic, astro.xpos, astro.ypos, astro.width, astro.height, null);
+		g.drawImage(astroPic, ball.xpos, ball.ypos, ball.width, ball.height, null);
+
+		g.drawImage(cleatPic, cleat.xpos, cleat.ypos, cleat.width, cleat.height, null);
 
 		g.dispose();
 		bufferStrategy.show();
