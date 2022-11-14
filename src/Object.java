@@ -15,6 +15,7 @@ public class Object {
     public int width;                 //the width of the hero image
     public int height;                //the height of the hero image
     public boolean isAlive;           //a boolean to denote if the hero is alive or dead
+    public Rectangle rec;
 
 
     //This is a constructor that takes 3 parameters.
@@ -28,6 +29,7 @@ public class Object {
         width = 60;
         height = 60;
         isAlive = true;
+        rec = new Rectangle(xpos,ypos,width,height);
  
     } // end Astronaut constructor
 
@@ -41,39 +43,35 @@ public class Object {
     public void bounce() { // move
         xpos = xpos + dx;
         ypos = ypos + dy;
-        if (xpos == 700-width) {
+        if (xpos >= 700-width || xpos <= 0) {
             dx = -dx;
         }
-        if(xpos == 0){
-            dx = -dx;
+        if (xpos >= 705-width){
+            xpos = 700-width;
         }
-        if(ypos == 500-height){
+
+        if(ypos >= 500-height || ypos <= 0) {
             dy = -dy;
         }
-        if(ypos == 0){
-            dy = -dy;
-        }
+        rec = new Rectangle(xpos,ypos,width,height);
     }
+
     public void wrap(){
         xpos = xpos + dx;
         ypos = ypos + dy;
-        if (ypos==500+height){
+
+        if (ypos>=500+height && dy > 0){
             ypos = 0;
         }
-        if (ypos==0-height){
+        if (ypos<=0-height && dy < 0){
             ypos = 500;
         }
-        if (xpos==700){
+        if (xpos>=700 && dx > 0){
             xpos = 0;
         }
-        if (xpos==0-width){
+        if (xpos<=0-width && dx < 0){
             xpos = 700;
         }
+        rec = new Rectangle(xpos,ypos,width,height);
     }
 }
-
-
-
-
-
-

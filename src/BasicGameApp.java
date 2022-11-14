@@ -39,7 +39,7 @@ public class BasicGameApp implements Runnable {
 
 	public BufferStrategy bufferStrategy;
 
-	public Image astroPic;
+	public Image ballPic;
 	public Image cleatPic;
 
 	//Declare the objects used in the program
@@ -63,8 +63,8 @@ public class BasicGameApp implements Runnable {
 
 		//variable and objects
 		//create (construct) the objects needed for the game and load up
-		astroPic = Toolkit.getDefaultToolkit().getImage("soccerBall.png"); //load the picture
-		ball = new Object("astro",100,400); //construct the astronaut
+		ballPic = Toolkit.getDefaultToolkit().getImage("soccerBall.png"); //load the picture
+		ball = new Object("ball",100,400); //construct the astronaut
 
 		cleatPic = Toolkit.getDefaultToolkit().getImage("soccerCleat.png");
 		cleat = new Object("cleat",400,250);
@@ -83,7 +83,8 @@ public class BasicGameApp implements Runnable {
 
 		//for the moment we will loop things forever.
 		while (true) {
-			moveThings();  //move all the game objects
+			moveThings(); //move all the game objects
+			crash();
 			render();  //paint the graphics
 			pause(20); //sleep for 10 ms
 		}
@@ -93,7 +94,15 @@ public class BasicGameApp implements Runnable {
 		//calls the move( ) code in the objects
 		ball.bounce();
 		cleat.wrap();
+	}
 
+	public void crash() {
+		if(ball.rec.intersects(cleat.rec)){
+			ball.dx = cleat.dx;
+			ball.dy = cleat.dy;
+			ball.xpos = cleat.xpos+ball.width;
+
+		}
 	}
 
 	//Pauses or sleeps the computer for the amount specified in milliseconds
@@ -139,9 +148,13 @@ public class BasicGameApp implements Runnable {
 		g.clearRect(0, 0, WIDTH, HEIGHT);
 
 		//draw the image of the astronaut
-		g.drawImage(astroPic, ball.xpos, ball.ypos, ball.width, ball.height, null);
-
+		if(ball.isAlive == true) {
+			g.drawImage(ballPic, ball.xpos, ball.ypos, ball.width, ball.height, null);
+			g.drawRect(ball.rec.x, ball.rec.y, ball.rec.width, ball.rec.height);
+		}
 		g.drawImage(cleatPic, cleat.xpos, cleat.ypos, cleat.width, cleat.height, null);
+
+		g.drawRect(cleat.rec.x, cleat.rec.y, cleat.rec.width, cleat.rec.height);
 
 		g.dispose();
 		bufferStrategy.show();
