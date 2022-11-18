@@ -23,9 +23,11 @@ public class Object {
     public Object(String pName, int pXpos, int pYpos) { // Astronaut constructor
         name = pName;
         xpos = pXpos;
+        //xpos = (int)(Math.random()*400+100);
         ypos = pYpos;
-        dx = 5;
-        dy = 5;
+        //ypos = (int)(Math.random()*200+100);
+        dx = -5;
+        dy = 0;
         width = 60;
         height = 60;
         isAlive = true;
@@ -43,14 +45,16 @@ public class Object {
     public void bounce() { // move
         xpos = xpos + dx;
         ypos = ypos + dy;
-        if (xpos >= 700-width || xpos <= 0) {
+        if (xpos >= 700-width) {
             dx = -dx;
         }
-        if (xpos >= 705-width){
-            xpos = 700-width;
+        if (xpos <= 0) {
+            dx = -dx;
         }
-
-        if(ypos >= 500-height || ypos <= 0) {
+        if(ypos >= 500-height) {
+            dy = -dy;
+        }
+        if(ypos <= 0) {
             dy = -dy;
         }
         rec = new Rectangle(xpos,ypos,width,height);

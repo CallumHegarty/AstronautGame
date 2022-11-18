@@ -40,12 +40,15 @@ public class BasicGameApp implements Runnable {
 	public BufferStrategy bufferStrategy;
 
 	public Image ballPic;
-	public Image cleatPic;
+	public Image cleat1Pic;
+	public Image cleat2Pic;
+	public Image backgroundPic;
 
 	//Declare the objects used in the program
 	//These are things that are made up of more than one variable type
 	public Object ball;
-	public Object cleat;
+	public Cleat cleat1;
+	public Cleat cleat2;
 
 	// Main method definition
 	// This is the code that runs first and automatically
@@ -64,10 +67,16 @@ public class BasicGameApp implements Runnable {
 		//variable and objects
 		//create (construct) the objects needed for the game and load up
 		ballPic = Toolkit.getDefaultToolkit().getImage("soccerBall.png"); //load the picture
-		ball = new Object("ball",100,400); //construct the astronaut
+		ball = new Object("ball",(int)((Math.random()*400)+100),200); //construct the astronaut
 
-		cleatPic = Toolkit.getDefaultToolkit().getImage("soccerCleat.png");
-		cleat = new Object("cleat",400,250);
+		cleat1Pic = Toolkit.getDefaultToolkit().getImage("soccerCleat.png");
+		cleat1 = new Cleat("cleat1",100,100);
+
+		cleat2Pic = Toolkit.getDefaultToolkit().getImage("soccerCleatBlack.jpg");
+		cleat2 = new Cleat("cleat2",400,400);
+		cleat2.width = 80;
+
+		backgroundPic = Toolkit.getDefaultToolkit().getImage("soccerField.jpg");
 
 	} // end BasicGameApp constructor
 
@@ -84,7 +93,7 @@ public class BasicGameApp implements Runnable {
 		//for the moment we will loop things forever.
 		while (true) {
 			moveThings(); //move all the game objects
-			crash();
+			kick();
 			render();  //paint the graphics
 			pause(20); //sleep for 10 ms
 		}
@@ -93,15 +102,27 @@ public class BasicGameApp implements Runnable {
 	public void moveThings() {
 		//calls the move( ) code in the objects
 		ball.bounce();
-		cleat.wrap();
+		cleat1.bounce();
+		cleat2.bounce();
 	}
 
-	public void crash() {
-		if(ball.rec.intersects(cleat.rec)){
-			ball.dx = cleat.dx;
-			ball.dy = cleat.dy;
-			ball.xpos = cleat.xpos+ball.width;
+	public void kick() {
 
+		// MAKE THE CLEATS SHOOT THE BALL TOWARD GOAL WITH PYTHAGOREAN
+
+		if(ball.rec.intersects(cleat1.rec)){
+			ball.dx = -ball.dx*3/2;
+			ball.dy = -ball.dy*3/2;
+
+			cleat1.dx = -cleat1.dx;
+			cleat1.dy = -cleat1.dy;
+		}
+		if(ball.rec.intersects(cleat2.rec)){
+			ball.dx = -ball.dx*11/10;
+			ball.dy = -ball.dy*11/10;
+
+			cleat2.dx = -cleat2.dx;
+			cleat2.dy = -cleat2.dy;
 		}
 	}
 
@@ -147,14 +168,18 @@ public class BasicGameApp implements Runnable {
 		Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
 		g.clearRect(0, 0, WIDTH, HEIGHT);
 
+		g.drawImage(backgroundPic, 0, 0, WIDTH, HEIGHT, null);
+
 		//draw the image of the astronaut
 		if(ball.isAlive == true) {
 			g.drawImage(ballPic, ball.xpos, ball.ypos, ball.width, ball.height, null);
 			g.drawRect(ball.rec.x, ball.rec.y, ball.rec.width, ball.rec.height);
 		}
-		g.drawImage(cleatPic, cleat.xpos, cleat.ypos, cleat.width, cleat.height, null);
+		g.drawImage(cleat1Pic, cleat1.xpos, cleat1.ypos, cleat1.width, cleat1.height, null);
+		g.drawRect(cleat1.rec.x, cleat1.rec.y, cleat1.rec.width, cleat1.rec.height);
 
-		g.drawRect(cleat.rec.x, cleat.rec.y, cleat.rec.width, cleat.rec.height);
+		g.drawImage(cleat2Pic, cleat2.xpos, cleat2.ypos, cleat2.width, cleat2.height, null);
+		g.drawRect(cleat2.rec.x, cleat2.rec.y, cleat2.rec.width, cleat2.rec.height);
 
 		g.dispose();
 		bufferStrategy.show();
