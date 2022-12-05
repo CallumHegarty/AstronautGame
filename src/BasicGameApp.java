@@ -26,7 +26,6 @@ public class BasicGameApp implements Runnable {
 
 	//Variable Definition Section
 	//Declare the variables used in the program
-	//You can set their initial values too
 
 	//Sets the width and height of the program window
 	final int WIDTH = 700;
@@ -45,10 +44,15 @@ public class BasicGameApp implements Runnable {
 	public Image backgroundPic;
 
 	//Declare the objects used in the program
-	//These are things that are made up of more than one variable type
 	public Object ball;
 	public Cleat cleat1;
 	public Cleat cleat2;
+
+	// Used in goal() method to add to and display score
+	public Rectangle greenGoalRect;
+	public Rectangle blackGoalRect;
+	int greenScore = 0;
+	int blackScore = 0;
 
 	// Main method definition
 	// This is the code that runs first and automatically
@@ -56,7 +60,6 @@ public class BasicGameApp implements Runnable {
 		BasicGameApp ex = new BasicGameApp();   //creates a new instance of the game
 		new Thread(ex).start();                 //creates a threads & starts up the code in the run( ) method  
 	}
-
 
 	// This section is the setup portion of the program
 	// Initialize your variables and construct your program objects here.
@@ -70,9 +73,9 @@ public class BasicGameApp implements Runnable {
 		ball = new Object("ball",(int)((Math.random()*400)+100),200); //construct the astronaut
 
 		cleat1Pic = Toolkit.getDefaultToolkit().getImage("soccerCleat.png");
-		cleat1 = new Cleat("cleat1",100,100);
+		cleat1 = new Cleat("cleat1",35,220);
 
-		cleat2Pic = Toolkit.getDefaultToolkit().getImage("soccerCleatBlack.jpg");
+		cleat2Pic = Toolkit.getDefaultToolkit().getImage("soccerCleatBlack.png");
 		cleat2 = new Cleat("cleat2",400,400);
 		cleat2.width = 80;
 
@@ -90,39 +93,95 @@ public class BasicGameApp implements Runnable {
 	// this is the code that plays the game after you set things up
 	public void run() {
 
-		//for the moment we will loop things forever.
+		//loops forever
 		while (true) {
 			moveThings(); //move all the game objects
-			kick();
+			kick(); //bounces happen
+			goal(); //keeping track of goals and score
 			render();  //paint the graphics
 			pause(20); //sleep for 10 ms
 		}
 	}
 
 	public void moveThings() {
-		//calls the move( ) code in the objects
+		//calls the bounce codes in the objects
 		ball.bounce();
-		cleat1.bounce();
-		cleat2.bounce();
+		cleat1.bounceLeft();
+		cleat2.bounceRight();
 	}
 
 	public void kick() {
 
-		// MAKE THE CLEATS SHOOT THE BALL TOWARD GOAL WITH PYTHAGOREAN
+		// make the cleats shoot the ball
 
-		if(ball.rec.intersects(cleat1.rec)){
-			ball.dx = -ball.dx*3/2;
-			ball.dy = -ball.dy*3/2;
+		if(ball.rec.intersects(cleat1.rec) && cleat1.isCrashing == false){
+			cleat1.isCrashing = true;
+			ball.dx = -ball.dx;
+			//cleat1.dx = -cleat1.dx;
+		}
+		if(!ball.rec.intersects(cleat1.rec)){
+			cleat1.isCrashing = false;
+		}
 
-			cleat1.dx = -cleat1.dx;
+		if(ball.rec.intersects(cleat2.rec) && cleat2.isCrashing == false){
+			cleat2.isCrashing = true;
+			ball.dx = -ball.dx;
+			//cleat2.dx = -cleat2.dx;
+		}
+		if(!ball.rec.intersects(cleat2.rec)){
+			cleat2.isCrashing = false;
+		}
+
+
+		// all these fix some moments where the objects would bounce repeatedly and crazy
+
+		if(ball.rec.intersects(cleat2.rec)&&(cleat2.dy<0)&&(ball.dy>0)){
+			ball.dy = -ball.dy;
+			cleat2.dy = -cleat2.dy;
+		}
+		if(ball.rec.intersects(cleat2.rec)&&(cleat2.dy>0)&&(ball.dy<0)){
+			ball.dy = -ball.dy;
+			cleat2.dy = -cleat2.dy;
+		}
+		if(ball.rec.intersects(cleat1.rec)&&(cleat1.dy>0)&&(ball.dy<0)){
+			ball.dy = -ball.dy;
 			cleat1.dy = -cleat1.dy;
 		}
-		if(ball.rec.intersects(cleat2.rec)){
-			ball.dx = -ball.dx*11/10;
-			ball.dy = -ball.dy*11/10;
+		if(ball.rec.intersects(cleat1.rec)&&(cleat1.dy<0)&&(ball.dy>0)){
+			ball.dy = -ball.dy;
+			cleat1.dy = -cleat1.dy;
+		}
+	}
 
-			cleat2.dx = -cleat2.dx;
-			cleat2.dy = -cleat2.dy;
+	public void goal(){
+
+		// Draws goal hitboxes
+		greenGoalRect= new Rectangle(35,220,22,60);
+		blackGoalRect= new Rectangle(645,219,22,61);
+
+		//Goals for Black Team
+		if(ball.rec.intersects(greenGoalRect)&&(ball.isCrashing == false)){
+			ball.isCrashing = true;
+			System.out.println("Black Goal!");
+			blackScore = blackScore + 1;
+			System.out.println("Black " + blackScore + " - " + greenScore + " Green");
+			ball.xpos = 350 - ball.width/2;
+			ball.ypos = 250 - ball.height/2;
+		}
+
+		//Goals for Green Team
+		if(ball.rec.intersects(blackGoalRect)&&(ball.isCrashing == false)){
+			ball.isCrashing = true;
+			System.out.println("Green Goal!");
+			greenScore = greenScore + 1;
+			System.out.println("Black " + blackScore + " - " + greenScore + " Green");
+			ball.xpos = 350 - ball.width/2;
+			ball.ypos = 250 - ball.height/2;
+		}
+
+		//isCrashing management, stops the things from bouncing repeatedly and crazily every collision
+		if(!ball.rec.intersects(greenGoalRect)&&!ball.rec.intersects(blackGoalRect)){
+			ball.isCrashing = false;
 		}
 	}
 
@@ -168,18 +227,24 @@ public class BasicGameApp implements Runnable {
 		Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
 		g.clearRect(0, 0, WIDTH, HEIGHT);
 
+		//draws background
 		g.drawImage(backgroundPic, 0, 0, WIDTH, HEIGHT, null);
 
-		//draw the image of the astronaut
-		if(ball.isAlive == true) {
-			g.drawImage(ballPic, ball.xpos, ball.ypos, ball.width, ball.height, null);
-			g.drawRect(ball.rec.x, ball.rec.y, ball.rec.width, ball.rec.height);
-		}
+
+		//draws the images of the characters
+
+		g.drawImage(ballPic, ball.xpos, ball.ypos, ball.width, ball.height, null);
+		//g.drawRect(ball.rec.x, ball.rec.y, ball.rec.width, ball.rec.height);
+
 		g.drawImage(cleat1Pic, cleat1.xpos, cleat1.ypos, cleat1.width, cleat1.height, null);
-		g.drawRect(cleat1.rec.x, cleat1.rec.y, cleat1.rec.width, cleat1.rec.height);
+		//g.drawRect(cleat1.rec.x, cleat1.rec.y, cleat1.rec.width, cleat1.rec.height);
 
 		g.drawImage(cleat2Pic, cleat2.xpos, cleat2.ypos, cleat2.width, cleat2.height, null);
-		g.drawRect(cleat2.rec.x, cleat2.rec.y, cleat2.rec.width, cleat2.rec.height);
+		//g.drawRect(cleat2.rec.x, cleat2.rec.y, cleat2.rec.width, cleat2.rec.height);
+
+		//goals:
+		//g.drawRect(35,220,22,60);
+		//g.drawRect(645,219,22,61);
 
 		g.dispose();
 		bufferStrategy.show();

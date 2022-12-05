@@ -7,33 +7,32 @@ public class Object {
 
     //VARIABLE DECLARATION SECTION
     //Here's where you state which variables you are going to use.
-    public String name;               //name of the hero
+    public String name;               //name
     public int xpos;                  //the x position
     public int ypos;                  //the y position
-    public int dx;                    //the speed of the hero in the x direction
-    public int dy;                    //the speed of the hero in the y direction
-    public int width;                 //the width of the hero image
-    public int height;                //the height of the hero image
-    public boolean isAlive;           //a boolean to denote if the hero is alive or dead
-    public Rectangle rec;
+    public int dx;                    //speed in the x direction
+    public int dy;                    //speed in the y direction
+    public int width;                 //the width of the image
+    public int height;                //the height of the image
+    public boolean isCrashing = false;//helps control collision repetition
+    public Rectangle rec;             //hit box
 
 
     //This is a constructor that takes 3 parameters.
     // This allows us to specify the hero's name and position when we build it.
-    public Object(String pName, int pXpos, int pYpos) { // Astronaut constructor
+    public Object(String pName, int pXpos, int pYpos) { // Object constructor
         name = pName;
         xpos = pXpos;
         //xpos = (int)(Math.random()*400+100);
         ypos = pYpos;
         //ypos = (int)(Math.random()*200+100);
-        dx = -5;
-        dy = 0;
+        dx = -10;
+        dy = 5;
         width = 60;
         height = 60;
-        isAlive = true;
         rec = new Rectangle(xpos,ypos,width,height);
  
-    } // end Astronaut constructor
+    } // end Object constructor
 
     //The move method.  Everytime this is run (or "called") the hero's x position and y position change by dx and dy
     public void move() { // move
@@ -42,7 +41,8 @@ public class Object {
 
     } // end move
 
-    public void bounce() { // move
+    //makes object bounce off walls
+    public void bounce() {
         xpos = xpos + dx;
         ypos = ypos + dy;
         if (xpos >= 700-width) {
