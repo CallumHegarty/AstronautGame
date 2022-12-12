@@ -42,17 +42,26 @@ public class BasicGameApp implements Runnable {
 	public Image cleat1Pic;
 	public Image cleat2Pic;
 	public Image backgroundPic;
+	public Image crownPic;
 
 	//Declare the objects used in the program
 	public Object ball;
 	public Cleat cleat1;
 	public Cleat cleat2;
 
+	//sound Effects
+	public SoundFile goalSound;
+	public SoundFile crowdCheering;
+	public SoundFile kickSound;
+
 	// Used in goal() method to add to and display score
 	public Rectangle greenGoalRect;
 	public Rectangle blackGoalRect;
 	int greenScore = 0;
 	int blackScore = 0;
+
+	public boolean gameOver = false;
+	public String gameWinner;
 
 	// Main method definition
 	// This is the code that runs first and automatically
@@ -81,6 +90,12 @@ public class BasicGameApp implements Runnable {
 
 		backgroundPic = Toolkit.getDefaultToolkit().getImage("soccerField.jpg");
 
+		crownPic = Toolkit.getDefaultToolkit().getImage("crown.png");
+
+		goalSound = new SoundFile("Doooh Reaction Male.wav");
+		crowdCheering = new SoundFile("Crowd Laughing 02.wav");
+		kickSound = new SoundFile("Flashlight Turned On 01.wav");
+
 	} // end BasicGameApp constructor
 
 
@@ -94,13 +109,17 @@ public class BasicGameApp implements Runnable {
 	public void run() {
 
 		//loops forever
-		while (true) {
+		while (gameOver == false) {
 			moveThings(); //move all the game objects
 			kick(); //bounces happen
-			goal(); //keeping track of goals and score
+			goal();	//keeping track of goals and score
+			gameEnd();
 			render();  //paint the graphics
-			pause(20); //sleep for 10 ms
+			pause(20);	//sleep for 10 ms
+
 		}
+
+		//if(gameOver == true)
 	}
 
 	public void moveThings() {
@@ -113,8 +132,8 @@ public class BasicGameApp implements Runnable {
 	public void kick() {
 
 		// make the cleats shoot the ball
-
 		if(ball.rec.intersects(cleat1.rec) && cleat1.isCrashing == false){
+			kickSound.play();
 			cleat1.isCrashing = true;
 			ball.dx = -ball.dx;
 			//cleat1.dx = -cleat1.dx;
@@ -124,6 +143,7 @@ public class BasicGameApp implements Runnable {
 		}
 
 		if(ball.rec.intersects(cleat2.rec) && cleat2.isCrashing == false){
+			kickSound.play();
 			cleat2.isCrashing = true;
 			ball.dx = -ball.dx;
 			//cleat2.dx = -cleat2.dx;
@@ -161,6 +181,8 @@ public class BasicGameApp implements Runnable {
 
 		//Goals for Black Team
 		if(ball.rec.intersects(greenGoalRect)&&(ball.isCrashing == false)){
+			goalSound.play();
+			crowdCheering.play();
 			ball.isCrashing = true;
 			System.out.println("Black Goal!");
 			blackScore = blackScore + 1;
@@ -171,6 +193,8 @@ public class BasicGameApp implements Runnable {
 
 		//Goals for Green Team
 		if(ball.rec.intersects(blackGoalRect)&&(ball.isCrashing == false)){
+			goalSound.play();
+			crowdCheering.play();
 			ball.isCrashing = true;
 			System.out.println("Green Goal!");
 			greenScore = greenScore + 1;
@@ -182,6 +206,29 @@ public class BasicGameApp implements Runnable {
 		//isCrashing management, stops the things from bouncing repeatedly and crazily every collision
 		if(!ball.rec.intersects(greenGoalRect)&&!ball.rec.intersects(blackGoalRect)){
 			ball.isCrashing = false;
+		}
+	}
+
+	public void gameEnd(){
+		//Win messages and reset cleats
+		gameWinner = "null";
+		if(blackScore >= 1){
+			gameWinner = "black";
+			gameOver = true;
+			cleat1.xpos = 200;
+			cleat1.ypos = 250;
+			cleat2.xpos = 500-cleat2.width;
+			cleat2.ypos = 250;
+			System.out.println("BLACK WINS");
+		}
+		if(greenScore >= 1){
+			gameWinner = "green";
+			gameOver = true;
+			cleat1.xpos = 200;
+			cleat1.ypos = 250;
+			cleat2.xpos = 500-cleat2.width;
+			cleat2.ypos = 250;
+			System.out.println("GREEN WINS");
 		}
 	}
 
@@ -245,6 +292,21 @@ public class BasicGameApp implements Runnable {
 		//goals:
 		//g.drawRect(35,220,22,60);
 		//g.drawRect(645,219,22,61);
+
+		Font scoreFont = new Font("Courier", Font.BOLD, 30);
+		g.setFont(scoreFont);
+		g.setColor(Color.WHITE);
+		//displays score
+		g.drawString(greenScore + "  --  " + blackScore, 305, 70);
+
+		if(gameWinner == "black"){
+			g.drawImage(crownPic, cleat2.xpos, cleat2.ypos-40, 100, 50, null);
+		}
+
+		if(gameWinner == "green"){
+			g.drawImage(crownPic, cleat1.xpos, cleat1.ypos-40, 100, 50, null);
+		}
+
 
 		g.dispose();
 		bufferStrategy.show();

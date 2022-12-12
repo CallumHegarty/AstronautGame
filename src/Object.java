@@ -51,13 +51,14 @@ public class Object {
         if (xpos <= 0) {
             dx = -dx;
         }
-        if(ypos >= 500-height) {
+        if(ypos > 500-height && dy > 0) {
             dy = -dy;
         }
-        if(ypos <= 0) {
+        if(ypos < 0 && dy < 0) {
             dy = -dy;
         }
         rec = new Rectangle(xpos,ypos,width,height);
+        //System.out.println("ball "+xpos + ", "+ ypos + " dx:"+ dx+" dy:" +dy);
     }
 
     public void wrap(){

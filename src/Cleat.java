@@ -51,13 +51,15 @@ public class Cleat {
         if (xpos <= 0) {
             dx = -dx;
         }
-        if(ypos >= 500-height) {
+        if(ypos >= 500-height && dy > 0) {
             dy = -dy;
         }
-        if(ypos <= 0) {
+        if(ypos <= 0 && dy < 0) {
             dy = -dy;
         }
         rec = new Rectangle(xpos,ypos,width,height);
+
+        //System.out.println("Green "+xpos + ", "+ ypos + "dx:"+ dx+" dy:" +dy);
     }
 
     //used for black cleat
@@ -71,23 +73,25 @@ public class Cleat {
         if (xpos <= 350) {
             dx = -dx;
         }
-        if(ypos >= 500-height) {
+        if(ypos >= 500-height && dy > 0) {
             dy = -dy;
         }
-        if(ypos <= 0) {
+        if(ypos <= 0 && dy < 0) {
             dy = -dy;
         }
         rec = new Rectangle(xpos,ypos,width,height);
+
+        //System.out.println("Black "+xpos + ", "+ ypos + "dx:"+ dx+" dy:" +dy);
     }
 
     public void wrap(){
         xpos = xpos + dx;
         ypos = ypos + dy;
 
-        if (ypos>=500+height && dy > 0){
+        if (ypos>500+height && dy > 0){
             ypos = 0;
         }
-        if (ypos<=0-height && dy < 0){
+        if (ypos<0-height && dy < 0){
             ypos = 500;
         }
         if (xpos>=700 && dx > 0){
