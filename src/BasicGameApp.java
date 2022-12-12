@@ -38,6 +38,7 @@ public class BasicGameApp implements Runnable {
 
 	public BufferStrategy bufferStrategy;
 
+	//all images used
 	public Image ballPic;
 	public Image cleat1Pic;
 	public Image cleat2Pic;
@@ -60,6 +61,7 @@ public class BasicGameApp implements Runnable {
 	int greenScore = 0;
 	int blackScore = 0;
 
+	//used for game ending
 	public boolean gameOver = false;
 	public String gameWinner;
 
@@ -92,6 +94,7 @@ public class BasicGameApp implements Runnable {
 
 		crownPic = Toolkit.getDefaultToolkit().getImage("crown.png");
 
+		//sound effects
 		goalSound = new SoundFile("Doooh Reaction Male.wav");
 		crowdCheering = new SoundFile("Crowd Laughing 02.wav");
 		kickSound = new SoundFile("Flashlight Turned On 01.wav");
@@ -105,7 +108,7 @@ public class BasicGameApp implements Runnable {
 // put your code to do things here.
 
 	// main thread
-	// this is the code that plays the game after you set things up
+	// plays the game
 	public void run() {
 
 		//loops forever
@@ -114,31 +117,28 @@ public class BasicGameApp implements Runnable {
 				moveThings(); //move all the game objects
 				kick(); //bounces happen
 				goal();    //keeping track of goals and score
-				gameEnd();
+				gameEnd(); //sees if game is over
 			}
 			render();  //paint the graphics
 			pause(20);	//sleep for 10 ms
 
 		}
-
-		//if(gameOver == true)
 	}
 
+	//calls the bounce codes in the objects
 	public void moveThings() {
-		//calls the bounce codes in the objects
 		ball.bounce();
 		cleat1.bounceLeft();
 		cleat2.bounceRight();
 	}
 
+	//makes the cleats shoot the ball
 	public void kick() {
 
-		// make the cleats shoot the ball
 		if(ball.rec.intersects(cleat1.rec) && cleat1.isCrashing == false){
 			kickSound.play();
 			cleat1.isCrashing = true;
 			ball.dx = -ball.dx;
-			//cleat1.dx = -cleat1.dx;
 		}
 		if(!ball.rec.intersects(cleat1.rec)){
 			cleat1.isCrashing = false;
@@ -148,7 +148,6 @@ public class BasicGameApp implements Runnable {
 			kickSound.play();
 			cleat2.isCrashing = true;
 			ball.dx = -ball.dx;
-			//cleat2.dx = -cleat2.dx;
 		}
 		if(!ball.rec.intersects(cleat2.rec)){
 			cleat2.isCrashing = false;
@@ -156,7 +155,6 @@ public class BasicGameApp implements Runnable {
 
 
 		// all these fix some moments where the objects would bounce repeatedly and crazy
-
 		if(ball.rec.intersects(cleat2.rec)&&(cleat2.dy<0)&&(ball.dy>0)){
 			ball.dy = -ball.dy;
 			cleat2.dy = -cleat2.dy;
@@ -175,9 +173,10 @@ public class BasicGameApp implements Runnable {
 		}
 	}
 
+	//controls goals and scoring
 	public void goal(){
 
-		// Draws goal hitboxes
+		// Draws goal hit boxes
 		greenGoalRect= new Rectangle(35,220,22,60);
 		blackGoalRect= new Rectangle(645,219,22,61);
 
@@ -211,9 +210,11 @@ public class BasicGameApp implements Runnable {
 		}
 	}
 
+	//Win messages and reset cleats when game ends
 	public void gameEnd(){
-		//Win messages and reset cleats
 		gameWinner = "null";
+
+		//if black wins
 		if(blackScore >= 3){
 			gameWinner = "black";
 			gameOver = true;
@@ -223,6 +224,8 @@ public class BasicGameApp implements Runnable {
 			cleat2.ypos = 250;
 			System.out.println("BLACK WINS");
 		}
+
+		//if green wins
 		if(greenScore >= 3){
 			gameWinner = "green";
 			gameOver = true;
@@ -281,6 +284,7 @@ public class BasicGameApp implements Runnable {
 
 
 		//draws the images of the characters
+		//all the commented out pieces are for rendering the hit box rectangles
 
 		g.drawImage(ballPic, ball.xpos, ball.ypos, ball.width, ball.height, null);
 		//g.drawRect(ball.rec.x, ball.rec.y, ball.rec.width, ball.rec.height);
@@ -295,12 +299,13 @@ public class BasicGameApp implements Runnable {
 		//g.drawRect(35,220,22,60);
 		//g.drawRect(645,219,22,61);
 
+		//displays score
 		Font scoreFont = new Font("Courier", Font.BOLD, 30);
 		g.setFont(scoreFont);
 		g.setColor(Color.WHITE);
-		//displays score
 		g.drawString(greenScore + "  --  " + blackScore, 305, 70);
 
+		//gives winner a crown at end
 		if(gameWinner == "black"){
 			g.drawImage(crownPic, cleat2.xpos, cleat2.ypos-40, 100, 50, null);
 		}
