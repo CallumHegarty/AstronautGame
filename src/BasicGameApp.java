@@ -109,11 +109,13 @@ public class BasicGameApp implements Runnable {
 	public void run() {
 
 		//loops forever
-		while (gameOver == false) {
-			moveThings(); //move all the game objects
-			kick(); //bounces happen
-			goal();	//keeping track of goals and score
-			gameEnd();
+		while (true) {
+			if(gameOver == false) {
+				moveThings(); //move all the game objects
+				kick(); //bounces happen
+				goal();    //keeping track of goals and score
+				gameEnd();
+			}
 			render();  //paint the graphics
 			pause(20);	//sleep for 10 ms
 
@@ -212,7 +214,7 @@ public class BasicGameApp implements Runnable {
 	public void gameEnd(){
 		//Win messages and reset cleats
 		gameWinner = "null";
-		if(blackScore >= 1){
+		if(blackScore >= 3){
 			gameWinner = "black";
 			gameOver = true;
 			cleat1.xpos = 200;
@@ -221,7 +223,7 @@ public class BasicGameApp implements Runnable {
 			cleat2.ypos = 250;
 			System.out.println("BLACK WINS");
 		}
-		if(greenScore >= 1){
+		if(greenScore >= 3){
 			gameWinner = "green";
 			gameOver = true;
 			cleat1.xpos = 200;
