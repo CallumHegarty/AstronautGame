@@ -1,4 +1,4 @@
-# AstronautGame
+# SoccerGame
 This is a state-of-the-art soccer simulator that accurately displays a digital version of an extremely lifelike game scenario.
 The black cleat and the green cleat duke it out on the pitch, both aiming for one goal: literally. Scoring a goal. 
 First to 3 wins.
