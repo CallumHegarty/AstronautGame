@@ -1,8 +1,7 @@
 # AstronautGame
-Basic astronaut movement game
-
 This is a state-of-the-art soccer simulator that accurately displays a digital version of an extremely lifelike game scenario.
-The black cleat and the green cleat duke it out on the pitch, both aiming for one goal: literally. Scoring a goal.
+The black cleat and the green cleat duke it out on the pitch, both aiming for one goal: literally. Scoring a goal. 
+First to 3 wins.
 With accurate crowd noises and pinpoint pitch atmosphere, this game is a revolution in electronic sporting.
 
 "Best thing I've ever played, six out of five stars"
