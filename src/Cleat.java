@@ -17,6 +17,11 @@ public class Cleat {
     public boolean isCrashing = false;//helps control collision repetition
     public Rectangle rec;             //hit box
 
+    public boolean right;
+    public boolean down;
+    public boolean up;
+    public boolean left;
+
 
     //This is a constructor that takes 3 parameters.
     // This allows us to specify the hero's name and position when we build it.
@@ -26,19 +31,44 @@ public class Cleat {
         //xpos = (int)(Math.random()*400+100);
         ypos = pYpos;
         //ypos = (int)(Math.random()*200+100);
-        dx = 8;
-        dy = 8;
+        dx = 4;
+        dy = 4;
         width = 90;
         height = 60;
         rec = new Rectangle(xpos,ypos,width,height);
 
     } // end Cleat constructor
 
-    //The move method.  Everytime this is run (or "called") the hero's x position and y position change by dx and dy
-    public void move() { // move
-        xpos = xpos + dx;
-        ypos = ypos + dy;
-    } // end move
+    public void move() {
+
+        if (right) {
+            xpos = xpos + dx;
+            if (xpos > 700 - width) {
+                xpos = 700 - width;
+            }
+        }
+
+        if (down) {
+            ypos = ypos + dy;
+            if (ypos > 500 - height) {
+                ypos = 500 - height;
+            }
+        }
+
+        if (up) {
+            ypos = ypos - dy;
+            if (ypos < 0) {
+                ypos = 0;
+            }
+        }
+
+        if (left) {
+            xpos = xpos - dx;
+            if (xpos < 0) {
+                xpos = 0;
+            }
+        }
+    }
 
     //used for green cleat
     //bounces on left side of field

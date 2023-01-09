@@ -13,16 +13,18 @@
 
 //Graphics Libraries
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.*;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import java.awt.event.*;
 
 
 //*******************************************************************************
 // Class Definition Section
 
-public class BasicGameApp implements Runnable {
+public class BasicGameApp implements Runnable, KeyListener {
 
 	//Variable Definition Section
 	//Declare the variables used in the program
@@ -78,6 +80,8 @@ public class BasicGameApp implements Runnable {
 
 		setUpGraphics();
 
+		canvas.addKeyListener(this);
+
 		//variable and objects
 		//create (construct) the objects needed for the game and load up
 		ballPic = Toolkit.getDefaultToolkit().getImage("soccerBall.png"); //load the picture
@@ -128,9 +132,81 @@ public class BasicGameApp implements Runnable {
 	//calls the bounce codes in the objects
 	public void moveThings() {
 		ball.bounce();
-		cleat1.bounceLeft();
-		cleat2.bounceRight();
+		cleat1.move();
+		cleat2.move();
 	}
+
+	//lets the player control the
+	public void keyPressed(KeyEvent event){
+		char key = event.getKeyChar();
+		int keyCode = event.getKeyCode();
+
+		//Green
+		if (keyCode == 68) {
+			cleat1.right = true;
+		}
+		if (keyCode == 83) {
+			cleat1.down = true;
+		}
+		if (keyCode == 87) {
+			cleat1.up = true;
+		}
+		if (keyCode == 65) {
+			cleat1.left = true;
+		}
+
+		//Black
+		if (keyCode == 39) {
+			cleat2.right = true;
+		}
+		if (keyCode == 38) {
+			cleat2.down = true;
+		}
+		if (keyCode == 40) {
+			cleat2.up = true;
+		}
+		if (keyCode == 37) {
+			cleat2.left = true;
+		}
+	}
+
+	public void keyReleased(KeyEvent event){
+		char key = event.getKeyChar();
+		int keyCode = event.getKeyCode();
+
+		//Green
+		if (keyCode == 68) {
+			cleat1.right = false;
+		}
+		if (keyCode == 83) {
+			cleat1.down = false;
+		}
+		if (keyCode == 87) {
+			cleat1.up = false;
+		}
+		if (keyCode == 65) {
+			cleat1.left = false;
+		}
+
+		//Black
+		if (keyCode == 39) {
+			cleat2.right = false;
+		}
+		if (keyCode == 38) {
+			cleat2.down = false;
+		}
+		if (keyCode == 40) {
+			cleat2.up = false;
+		}
+		if (keyCode == 37) {
+			cleat2.left = false;
+		}
+	}
+
+	public void keyTyped(KeyEvent event){
+
+	}
+
 
 	//makes the cleats shoot the ball
 	public void kick() {
@@ -155,22 +231,22 @@ public class BasicGameApp implements Runnable {
 
 
 		// all these fix some moments where the objects would bounce repeatedly and crazy
-		if(ball.rec.intersects(cleat2.rec)&&(cleat2.dy<0)&&(ball.dy>0)){
-			ball.dy = -ball.dy;
-			cleat2.dy = -cleat2.dy;
-		}
-		if(ball.rec.intersects(cleat2.rec)&&(cleat2.dy>0)&&(ball.dy<0)){
-			ball.dy = -ball.dy;
-			cleat2.dy = -cleat2.dy;
-		}
-		if(ball.rec.intersects(cleat1.rec)&&(cleat1.dy>0)&&(ball.dy<0)){
-			ball.dy = -ball.dy;
-			cleat1.dy = -cleat1.dy;
-		}
-		if(ball.rec.intersects(cleat1.rec)&&(cleat1.dy<0)&&(ball.dy>0)){
-			ball.dy = -ball.dy;
-			cleat1.dy = -cleat1.dy;
-		}
+		//if(ball.rec.intersects(cleat2.rec)&&(cleat2.dy<0)&&(ball.dy>0)){
+		//	ball.dy = -ball.dy;
+		//	cleat2.dy = -cleat2.dy;
+		//}
+		//if(ball.rec.intersects(cleat2.rec)&&(cleat2.dy>0)&&(ball.dy<0)){
+		//	ball.dy = -ball.dy;
+		//	cleat2.dy = -cleat2.dy;
+		//}
+		//if(ball.rec.intersects(cleat1.rec)&&(cleat1.dy>0)&&(ball.dy<0)){
+		//	ball.dy = -ball.dy;
+		//	cleat1.dy = -cleat1.dy;
+		//}
+		//if(ball.rec.intersects(cleat1.rec)&&(cleat1.dy<0)&&(ball.dy>0)){
+		//	ball.dy = -ball.dy;
+		//	cleat1.dy = -cleat1.dy;
+		//}
 	}
 
 	//controls goals and scoring
